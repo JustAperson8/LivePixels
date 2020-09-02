@@ -13,7 +13,11 @@ set(SDFS_FILES
     LivePixels/SDFs/sphere.hpp
     LivePixels/SDFs.hpp)
 
+set(LIVE_PIXELS_FILES
+    LivePixels/camera.cpp
+    LivePixels/camera.hpp)
+
 add_library(LivePixelsLib
-        ${MATH_FILES} ${SDFS_FILES})
+        ${MATH_FILES} ${SDFS_FILES} ${LIVE_PIXELS_FILES})
 
 target_include_directories(LivePixelsLib PUBLIC .)

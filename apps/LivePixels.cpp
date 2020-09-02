@@ -2,7 +2,6 @@
 #include <LivePixels/SDFs/ISDF.hpp>
 #include <LivePixels/math.hpp>
 
-
 class Camera
 {
 private:

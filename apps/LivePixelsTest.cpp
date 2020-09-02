@@ -1,6 +1,7 @@
 #include <iostream>
 #include <LivePixels/math.hpp>
 #include <LivePixels/SDFs.hpp>
+#include <LivePixels/camera.hpp>
 #include <cmath>
 #include <vector>
 
@@ -9,64 +10,28 @@ using std::sin;
 using std::cos;
 using Qtr = lp::Quaternion<float>;
 
-class Camera
+/*
+class PerspectiveDisplay
 {
 private:
-    std::vector<lp::SDFs::ISDF *> m_map;
-    lp::Quaternion<float> m_pos;
-    float m_dephOfRender;
-    size_t m_iterations;
+    Camera m_camera;
+    size_t m_width, m_height;
+    float m_pw, m_ph;
 
 public:
-    Camera(std::vector<lp::SDFs::ISDF *> map,
-           const lp::Quaternion<float> &position = {0, 0, 0, 0},
-           float dephOfRender = 2000,
-           size_t iterations = 10)
-        : m_map(map),  m_pos(position), m_dephOfRender(dephOfRender), m_iterations(iterations)
+    PerspectiveDisplay(const Camera &camera, size_t width, size_t height, float pw = 1, float ph = 1)
+        : m_camera(camera), m_width(width), m_height(height), m_pw(pw), m_ph(ph)
     {}
-
-    virtual ~Camera() = default;
-    
-private:
-    float minDistance(lp::Quaternion<float> &point)
-    {
-        float min = 1e18;
-        for (const auto *shape: m_map)
-            if (shape != nullptr)
-                min = std::min(min, shape->draw(point));
-        return min;
-    }
-
-public:
-    void setPosition(const lp::Quaternion<float> &position)
-    {
-        m_pos = position;
-    }
-
-    lp::Quaternion<float> getPosition()
-    {
-        return m_pos;
-    }
-
-    float RayMarching(lp::Quaternion<float> rotator)
-    {
-        float distance = 0;
-        lp::Quaternion<float> p(m_pos);
-        for (size_t i = 0; i < m_iterations; ++i)
-        {
-            float newD = minDistance(p);
-            if (newD <= 0.6)
-                return distance;
-            lp::Quaternion<float> buf(0, newD, 0, 0);
-            p = (rotator * buf * rotator.inverse()) + p;
-            if (distance > m_dephOfRender)
-                return 1e18;
-        }
-        return 1e18;
-    }
 };
+*/
 
 int main(int argc, char **argv)
 {
+    std::vector<lp::SDFs::ISDF *> testMap;
+    testMap.push_back(new lp::SDFs::Sphere(0, 100, 100, 0, 50));
+    lp::Camera camera(testMap);
+    std::cout << camera.rayMarching({cos(angleToRadian(45 / 2)), 0, 0, sin(angleToRadian(45 / 2))}) << std::endl;
+    for (auto *obj: testMap)
+        delete obj;
     return 0;
 }

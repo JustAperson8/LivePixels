@@ -5,15 +5,15 @@
 
 namespace lp::SDFs
 {
-    class Circle : public ISDF
+    class Sphere : public ISDF
     {
     private:
     lp::Quaternion<float> m_pos;
     float m_radius;
 
     public:
-    Circle(float s, float x, float y, float z, float radius);
-    Circle(const lp::Quaternion<float> &pos = {0, 0, 0, 0}, float radius = 10);
+    Sphere(float s, float x, float y, float z, float radius);
+    Sphere(const lp::Quaternion<float> &pos = {0, 0, 0, 0}, float radius = 10);
 
     public:
     [[nodiscard]] float draw(const lp::Quaternion<float> &pos) const override;
