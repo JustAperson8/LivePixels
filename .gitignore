@@ -1,3 +1,4 @@
 CMakeLists.txt.user
 cmake-build-debug/
 .idea/
+apps/LivePixelsTest.cpp

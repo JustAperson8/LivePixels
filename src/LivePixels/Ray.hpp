@@ -1,5 +1,5 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#ifndef RAY_HPP
+#define RAY_HPP
 
 #include <LivePixels/SDFs.hpp>
 #include <LivePixels/math.hpp>
@@ -7,7 +7,7 @@
 
 namespace lp
 {
-    class Camera
+    class Ray
     {
     private:
         std::vector<lp::SDFs::ISDF *> m_map;
@@ -16,12 +16,12 @@ namespace lp
         size_t m_iterations;
 
     public:
-    Camera(std::vector<lp::SDFs::ISDF *> map,
-           const lp::Quaternion<float> &position = {0, 0, 0, 0},
-           float depthOfRender = 2000,
-           size_t iterations = 10);
+        Ray(std::vector<lp::SDFs::ISDF *> map,
+            const lp::Quaternion<float> &position = {0, 0, 0, 0},
+            float depthOfRender = 2000,
+            size_t iterations = 10);
 
-        virtual ~Camera() = default;
+        virtual ~Ray() = default;
 
     private:
         float minDistance(const lp::Quaternion<float> &point);
@@ -34,4 +34,4 @@ namespace lp
     };
 }
 
-#endif // CAMERA_HPP
+#endif // RAY_HPP
