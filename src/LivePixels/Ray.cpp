@@ -34,7 +34,7 @@ float lp::Ray::rayMarching(lp::Quaternion<float> rotator)
     for (size_t i = 0; i < m_iterations; ++i)
     {
         float newD = minDistance(p);
-        if (newD <= 0.6)
+        if (newD <= 0.5)
             return distance;
         lp::Quaternion<float> buf(0, newD, 0, 0);
         p = (rotator * buf * rotator.inverse()) + p;

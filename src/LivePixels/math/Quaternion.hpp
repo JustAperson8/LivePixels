@@ -128,12 +128,12 @@ namespace lp
         }
 
     public:
-        T abs()
+        T abs() const
         {
             return std::sqrt(m_s * m_s + m_x * m_x + m_y * m_y + m_z * m_z);
         }
 
-	Quaternion<T> conjugate()
+	Quaternion<T> conjugate() const
 	{
 	    return {m_s, -m_x, -m_y, -m_z};
 	}
@@ -144,8 +144,8 @@ namespace lp
 	    return {m_s / a, m_x / a, m_y / a, m_z / a};
 	}
 
-	Quaternion<T> inverse()
-	{
+	Quaternion<T> inverse() const
+    {
 	    T a = abs();
 	    return conjugate() / (a * a);
 	}
