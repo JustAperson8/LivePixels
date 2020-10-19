@@ -1,7 +1,7 @@
 #ifndef ISDF_HPP
 #define ISDF_HPP
 
-#include <LivePixels/math.hpp>
+#include "LivePixels/math.hpp"
 
 namespace lp::SDFs
 {

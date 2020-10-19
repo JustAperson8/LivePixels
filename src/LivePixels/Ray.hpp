@@ -1,8 +1,8 @@
 #ifndef RAY_HPP
 #define RAY_HPP
 
-#include <LivePixels/SDFs.hpp>
-#include <LivePixels/math.hpp>
+#include "LivePixels/SDFs.hpp"
+#include "LivePixels/math.hpp"
 #include <vector>
 
 namespace lp
