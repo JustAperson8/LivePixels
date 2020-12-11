@@ -5,55 +5,91 @@
 #include "LivePixels/Ray.hpp"
 #include "LivePixels/SDFs.hpp"
 
-class Cube : public lp::SDFs::ISDF
+class Artist
 {
 private:
-    float m_side;
+    const std::vector<lp::SDFs::ISDF *> &m_mapForRender;
+    const lp::Quaternion<float> &m_startRotator, &m_moving;
+    sf::RenderTexture m_renderTexture;
+    lp::Quaternion<float> m_rot();
+    size_t m_w, m_h, m_vaw, m_vah;
+    lp::Ray m_ray;
+    sf::RectangleShape m_pixel;
 
 public:
-    explicit Cube(float side)
-        : m_side(side)
+    explicit Artist(size_t w, size_t h, size_t vaw, size_t vah,
+                    const std::vector<lp::SDFs::ISDF *> &mapForRender,
+                    const lp::Quaternion<float> &startRotator = {0, 1, 0, 0},
+                    const lp::Quaternion<float> &moving = {0, 0, 0, 0})
+        : m_mapForRender(mapForRender), m_startRotator(startRotator), m_moving(moving), m_ray(mapForRender, moving),
+          m_w(w), m_h(h),
+          m_vaw(vaw), m_vah(vah),
+          m_pixel({1, 1})
+    {
+    }
+
+    sf::Texture draw()
+    {
+        for (float x = 0; x < m_w; ++x)
+        {
+            for (float y = 0; y < m_h; ++y)
+            {
+                lp::Quaternion<float> r1(std::cos(lp::angleToRadian((x * m_vaw / m_w) / 2)),
+                                         0,
+                                         std::sin(lp::angleToRadian((x * m_vaw / m_w) / 2)),
+                                         0
+                ),
+                    r2(std::cos(lp::angleToRadian((y * m_vah / m_h) / 2)),
+                       0,
+                       0,
+                       std::sin(lp::angleToRadian((y * m_vah / m_h) / 2))
+                );
+                float dist = m_ray.rayMarching(r2 * (r1 * m_startRotator * r1.inverse()) * r2.inverse());
+                if (dist != lp::notFound)
+                {
+                    m_pixel.setPosition(x, y);
+                    float color = 5000 / dist;
+                    m_pixel.setFillColor(sf::Color(color, color, color));
+                    m_renderTexture.draw(m_pixel);
+                }
+            }
+        }
+        return m_renderTexture.getTexture();
+    }
+
+    virtual ~Artist() = default;
+};
+
+class Bublic : public lp::SDFs::ISDF
+{
+private:
+    float m_radius, m_Radius;
+public:
+    Bublic(float radius = 10, float Radius = 20)
+        : m_radius(radius), m_Radius(Radius)
     {}
 
-public:
-    [[nodiscard]] float draw(const lp::Quaternion<float> &q) const override
+    ~Bublic() = default;
+
+    [[nodiscard]] virtual float draw(const lp::Quaternion<float> &quater) const 
     {
-        return std::max(std::max(std::abs(q.getX()), std::abs(q.getY())), std::abs(q.getZ())) - m_side / 2;
+        // auto Quater(quater);
+        // Quater.setX(static_cast<int>(Quater.getX()) % 30);
+        // Quater.setY(static_cast<int>(Quater.getY()) % 30);
+        // Quater.setZ(static_cast<int>(Quater.getZ()) % 30);
+        // return std::sqrt( std::pow(std::sqrt(Quater.getX() * Quater.getX() + Quater.getZ() * Quater.getZ()) - m_Radius, 2) + Quater.getY() * Quater.getY()) - m_radius;
+        return std::sqrt( std::pow(std::sqrt(quater.getX() * quater.getX() + quater.getZ() * quater.getZ()) - m_Radius, 2) + quater.getY() * quater.getY()) - m_radius;
     }
 };
 
-class CubeWithH : public lp::SDFs::ISDF
-{
-private:
-    Cube cube;
-    lp::SDFs::Sphere holes;
-
-public:
-    explicit CubeWithH(float side)
-        : cube(side), holes({0, 0, 0, 0}, side - 2.5f)
-    {}
-
-public:
-    [[nodiscard]] float draw(const lp::Quaternion<float> &quater) const override
-    {
-        return std::max(cube.draw(quater), -holes.draw(quater));
-    }
-};
-
-
-int main(int argc, char **argv)
-{
-    size_t w = 200, h = 200;
+int main() 
+{ 
+    size_t w = 200, h = 200; 
     // va is a view angle
-    float vaw = 90, vah = 90;
-    std::vector<lp::SDFs::ISDF *> mapForRender(6, nullptr);
-    mapForRender[0] = new Cube(4);
-    mapForRender[1] = new CubeWithH(10);
-    mapForRender[2] = new lp::SDFs::Sphere({0, 0, -10, 0}, 5);
-    mapForRender[3] = new lp::SDFs::Sphere({0, -10, 0, 0}, 3);
-    mapForRender[4] = new lp::SDFs::Sphere({0, 0, 0, 10}, 2);
-    mapForRender[5] = new lp::SDFs::Sphere({0, -10, -10, -10}, 4);
-    lp::Quaternion<float> startRotator(0, 1, 0, 0), moving(0, 0, 0, 0),
+    float vaw = 90, vah = 90; 
+    std::vector<lp::SDFs::ISDF *> mapForRender(1, nullptr);
+    mapForRender[0] = new lp::SDFs::GroupOfSDFs({new lp::SDFs::Sphere({0, 5, 0, 0}, 10)}, {new lp::SDFs::Sphere({0, 0, 0, 0}, 10)});
+    lp::Quaternion<float> startRotator(0, 1, 0, 0),
         rot(std::cos(lp::angleToRadian(1)), 0, std::sin(lp::angleToRadian(1)), 0);
     lp::Ray ray(mapForRender, {0, 0, 0, 0}, 200, 7);
     ray.setPosition({0, 10, 10, 10});
@@ -126,7 +162,7 @@ int main(int argc, char **argv)
                 {
                     pixel.setPosition(x, y);
                     float color = 5000 / dist;
-                    pixel.setFillColor(sf::Color(color, color, color));
+                    pixel.setFillColor(sf::Color(color + 100, color, color));
                     window.draw(pixel);
                 }
             }

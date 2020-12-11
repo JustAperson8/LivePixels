@@ -9,6 +9,8 @@ set(MATH_FILES
 
 set(SDFS_FILES
     LivePixels/SDFs/ISDF.hpp
+    LivePixels/SDFs/GroupOfSDFs.cpp
+    LivePixels/SDFs/GroupOfSDFs.hpp
     LivePixels/SDFs/Sphere.cpp
     LivePixels/SDFs/Sphere.hpp
     LivePixels/SDFs.hpp)

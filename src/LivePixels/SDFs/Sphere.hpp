@@ -12,7 +12,6 @@ namespace lp::SDFs
         float m_radius;
 
     public:
-
         Sphere(float s, float x, float y, float z, float radius);
         explicit Sphere(const lp::Quaternion<float> &pos = {0, 0, 0, 0}, float radius = 10);
 
