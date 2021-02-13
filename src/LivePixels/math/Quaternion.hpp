@@ -10,6 +10,10 @@
 
 namespace lp
 {
+    /**
+     * Math object "Quaternion".
+     * @tparam T typename for Quaternion.
+     */
     template<class T = float>
     class Quaternion
     {
@@ -18,10 +22,21 @@ namespace lp
 
     public:
         //region constructor && copy && destructor
-    Quaternion(T s, T x, T y, T z)
+        /**
+         * Basic constructor for Quaternion<T>.
+         * @param s Real number S.
+         * @param x Imaginary number X.
+         * @param y Imaginary number Y.
+         * @param z Imaginary number Z.
+         */
+        Quaternion(T s, T x, T y, T z)
             : m_s(s), m_x(x), m_y(y), m_z(z)
         {}
 
+        /**
+         * Copy constructor.
+         * @param q Another Quaternion<T>.
+         */
         Quaternion(const Quaternion &q)
             : m_s(q.m_s), m_x(q.m_x), m_y(q.m_y), m_z(q.m_z)
         {}
@@ -39,23 +54,39 @@ namespace lp
         //endregion
 
     public:
-	//region Getters && Setters
-	[[nodiscard]] T getS() const { return m_s; }
+        //region Getters && Setters
+        ///@return Real number S.
+        [[nodiscard]] T getS() const
+        { return m_s; }
 
-	void setS(T mS) { m_s = mS; }
+        ///@param s Real number S.
+        void setS(T s)
+        { m_s = s; }
 
-	[[nodiscard]] T getX() const { return m_x; }
+        ///@return Imaginary number X.
+        [[nodiscard]] T getX() const
+        { return m_x; }
 
-	void setX(T mX) { m_x = mX; }
+        ///@param x Imaginary number X.
+        void setX(T x)
+        { m_x = x; }
 
-	[[nodiscard]] T getY() const { return m_y; }
+        ///@return Imaginary number Y.
+        [[nodiscard]] T getY() const
+        { return m_y; }
 
-	void setY(T mY) { m_y = mY; }
+        ///@param y Imaginary number Y.
+        void setY(T y)
+        { m_y = y; }
 
-	[[nodiscard]] T getZ() const { return m_z; }
+        ///@return Imaginary number Z.
+        [[nodiscard]] T getZ() const
+        { return m_z; }
 
-	void setZ(T mZ) { m_z = mZ; }
-	//endregion
+        /// @param z nImaginary number Z.
+        void setZ(T z)
+        { m_z = z; }
+        //endregion
 
     public:
         //region += && -= && *=
@@ -91,14 +122,14 @@ namespace lp
             return *this;
         }
 
-	Quaternion &operator/=(T num)
-	{
-	    m_s /= num;
-	    m_x /= num;
-	    m_y /= num;
-	    m_z /= num;
-	    return *this;
-	}
+        Quaternion &operator/=(T num)
+        {
+            m_s /= num;
+            m_x /= num;
+            m_y /= num;
+            m_z /= num;
+            return *this;
+        }
         //endregion
 
     public:
@@ -133,22 +164,22 @@ namespace lp
             return std::sqrt(m_s * m_s + m_x * m_x + m_y * m_y + m_z * m_z);
         }
 
-	Quaternion<T> conjugate() const
-	{
-	    return {m_s, -m_x, -m_y, -m_z};
-	}
+        Quaternion<T> conjugate() const
+        {
+            return {m_s, -m_x, -m_y, -m_z};
+        }
 
-	Quaternion<T> normal()
-	{
-	    T a = abs();
-	    return {m_s / a, m_x / a, m_y / a, m_z / a};
-	}
+        Quaternion<T> normal()
+        {
+            T a = abs();
+            return {m_s / a, m_x / a, m_y / a, m_z / a};
+        }
 
-	Quaternion<T> inverse() const
-    {
-	    T a = abs();
-	    return conjugate() / (a * a);
-	}
+        Quaternion<T> inverse() const
+        {
+            T a = abs();
+            return conjugate() / (a * a);
+        }
 
     public:
         friend std::ostream &operator<<(std::ostream &out, const Quaternion &q1)
