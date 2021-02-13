@@ -1,6 +1,7 @@
 CMakeLists.txt.user
 cmake-build-debug/
 .idea/
+.cache/
 .vscode/
 apps/LivePixelsTest.cpp
 build

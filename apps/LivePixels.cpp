@@ -88,7 +88,7 @@ int main()
     // va is a view angle
     float vaw = 90, vah = 90; 
     std::vector<lp::SDFs::ISDF *> mapForRender(1, nullptr);
-    mapForRender[0] = new lp::SDFs::GroupOfSDFs({new lp::SDFs::Sphere({0, 5, 0, 0}, 10)}, {new lp::SDFs::Sphere({0, 0, 0, 0}, 10)});
+    mapForRender[0] = new lp::SDFs::GroupOfSDFs({new lp::SDFs::Sphere({0, 0, 0, 0}, 10), new lp::SDFs::Sphere({0, 0, -10, 0}, 10)}, {new Bublic(10, 12)});
     lp::Quaternion<float> startRotator(0, 1, 0, 0),
         rot(std::cos(lp::angleToRadian(1)), 0, std::sin(lp::angleToRadian(1)), 0);
     lp::Ray ray(mapForRender, {0, 0, 0, 0}, 200, 7);
