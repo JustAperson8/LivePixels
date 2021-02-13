@@ -5,61 +5,6 @@
 #include "LivePixels/Ray.hpp"
 #include "LivePixels/SDFs.hpp"
 
-class Artist
-{
-private:
-    const std::vector<lp::SDFs::ISDF *> &m_mapForRender;
-    const lp::Quaternion<float> &m_startRotator, &m_moving;
-    sf::RenderTexture m_renderTexture;
-    lp::Quaternion<float> m_rot();
-    size_t m_w, m_h, m_vaw, m_vah;
-    lp::Ray m_ray;
-    sf::RectangleShape m_pixel;
-
-public:
-    explicit Artist(size_t w, size_t h, size_t vaw, size_t vah,
-                    const std::vector<lp::SDFs::ISDF *> &mapForRender,
-                    const lp::Quaternion<float> &startRotator = {0, 1, 0, 0},
-                    const lp::Quaternion<float> &moving = {0, 0, 0, 0})
-        : m_mapForRender(mapForRender), m_startRotator(startRotator), m_moving(moving), m_ray(mapForRender, moving),
-          m_w(w), m_h(h),
-          m_vaw(vaw), m_vah(vah),
-          m_pixel({1, 1})
-    {
-    }
-
-    sf::Texture draw()
-    {
-        for (float x = 0; x < m_w; ++x)
-        {
-            for (float y = 0; y < m_h; ++y)
-            {
-                lp::Quaternion<float> r1(std::cos(lp::angleToRadian((x * m_vaw / m_w) / 2)),
-                                         0,
-                                         std::sin(lp::angleToRadian((x * m_vaw / m_w) / 2)),
-                                         0
-                ),
-                    r2(std::cos(lp::angleToRadian((y * m_vah / m_h) / 2)),
-                       0,
-                       0,
-                       std::sin(lp::angleToRadian((y * m_vah / m_h) / 2))
-                );
-                float dist = m_ray.rayMarching(r2 * (r1 * m_startRotator * r1.inverse()) * r2.inverse());
-                if (dist != lp::notFound)
-                {
-                    m_pixel.setPosition(x, y);
-                    float color = 5000 / dist;
-                    m_pixel.setFillColor(sf::Color(color, color, color));
-                    m_renderTexture.draw(m_pixel);
-                }
-            }
-        }
-        return m_renderTexture.getTexture();
-    }
-
-    virtual ~Artist() = default;
-};
-
 class Bublic : public lp::SDFs::ISDF
 {
 private:
@@ -81,6 +26,25 @@ public:
         return std::sqrt( std::pow(std::sqrt(quater.getX() * quater.getX() + quater.getZ() * quater.getZ()) - m_Radius, 2) + quater.getY() * quater.getY()) - m_radius;
     }
 };
+
+class CubeSDF : public lp::SDFs::ISDF
+{
+private:
+    lp::Quaternion<float> cube;
+
+public:
+    CubeSDF (lp::Quaternion<float> cube)
+        : cube(cube)
+    {
+    } 
+    
+    virtual float draw(const lp::Quaternion<float> &quater) const override
+    {
+    }
+
+    ~CubeSDF () = default;
+};
+
 
 int main() 
 { 
